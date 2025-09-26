@@ -94,7 +94,6 @@ while True:
             if parsed_data['operation'] == 'quit':
                 logger.info("[CONNECTION CLOSING] Client requested quit")
                 break
-            
             logger.info(f"[REQUEST DETAILS] Operation: {parsed_data['operation']}, Operand A: {parsed_data['a']}, Operand B: {parsed_data['b']}\n")
 
             # PROCESSING
@@ -110,6 +109,6 @@ while True:
         except Exception as e:
             logger.error(f"[ERROR] {str(e)}")
             break
-# END CONECTION
+#   END CONECTION
     logger.info(f"[CONNECTION CLOSED] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     conn.close()                                                          
