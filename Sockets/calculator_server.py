@@ -5,7 +5,7 @@ import time
 
 
 HOST = "0.0.0.0"                                                    # Listen on all network interfaces
-PORT = 80                                                           # Use port 80 for this server (common for web apps)
+PORT = 8080                                                           # Use port 80 for this server (common for web apps)
 
 def handle_request(data):
     """
@@ -90,7 +90,7 @@ while True:
     total_time = end - start
     logger.info(f"[RESPONSE SENT] Data: {response}")
     logger.info(f"[RESPONSE DETAILS] Result: {response.get('result', 'N/A')}, Code: {response.get('code', 'N/A')}")
-    logger.info(f"[PROCESSING TIME] {total_time:.4f} seconds\n")
+    logger.info(f"[PROCESSING TIME] {total_time:.7f} seconds\n")
 
     conn.send(json.dumps(response).encode())
 
