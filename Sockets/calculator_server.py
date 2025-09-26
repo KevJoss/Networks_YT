@@ -70,38 +70,32 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(filename="server_information.log", level=logging.INFO)
 # Main loop to accept clients
 while True:
-    conn, addr = server_socket.accept()                                         # Wait for a client to connect (blocking)
-    
-    # Shows the connection time with Year-Month-Day | Hour-Minutes-Seconds
-    time.strftime("%Y-%m-%d %H:%M:%S")
-    logger.info('Conection start!')
-    logger.info(f'Connection START time: {time.strftime("%Y-%m-%d %H:%M:%S")}')
-    
-    # Client information
-    logger.info(f'The clien IP is {addr[0]}')
-    logger.info(f'The client port is {addr[1]}\n')
-    
-    # Data information
-    data = conn.recv(1024).decode()                             # Receive up to 1024 bytes and decode from bytes to string
-    logger.info(f'Received data from the client: {json.loads(data)}')
-    logger.info(f"OPERATION: {json.loads(data)['operation']}")
-    logger.info(f"VALUE_a: {json.loads(data)['a']}")
-    logger.info(f"VALUE_b: {json.loads(data)['b']}\n")
-    
-    # Time processing to data
+    # Wait for a client to connect (blocking)
+    conn, addr = server_socket.accept()  
+
+    # START CONECTION
+    logger.info(f"[CONNECTION OPENED] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"[CLIENT INFO] IP: {addr[0]}, Port: {addr[1]}\n")
+
+    # RECEIVED DATA
+    data = conn.recv(1024).decode()
+    parsed_data = json.loads(data)
+    logger.info(f"[REQUEST RECEIVED] Raw Data: {data}")
+    logger.info(f"[REQUEST DETAILS] Operation: {parsed_data['operation']}, Operand A: {parsed_data['a']}, Operand B: {parsed_data['b']}\n")
+
+    # PROCESSING
     start = time.time()
-    response = handle_request(data)                             # Process the request and get response dictionary
-    logger.info(f'Response by the server to client: {response}')
-    logger.info(f"RESULT: {response['result']}")
-    logger.info(f"CODE: {response['code']}")
+    response = handle_request(data)
     end = time.time()
-    total_time = abs(start - end)
-    logger.info(f'Time to process data was: {total_time:.8f} seconds\n')
+    total_time = end - start
+    logger.info(f"[RESPONSE SENT] Data: {response}")
+    logger.info(f"[RESPONSE DETAILS] Result: {response.get('result', 'N/A')}, Code: {response.get('code', 'N/A')}")
+    logger.info(f"[PROCESSING TIME] {total_time:.4f} seconds\n")
+
+    conn.send(json.dumps(response).encode())
+
+    # END CONECTION
+    logger.info(f"[CONNECTION CLOSED] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     
-    conn.send(json.dumps(response).encode())        # Convert/serialize response to JSON string, encode to bytes, and send
-    
-    # End connection time
-    time.strftime("%Y-%m-%d %H:%M:%S")
-    logger.info(f'Connection END time: {time.strftime("%Y-%m-%d %H:%M:%S")}')
-    logger.info('Finished\n')
-    conn.close()                                                                # Close connection with the client
+    # Close connection with the client
+    conn.close()                                                          
