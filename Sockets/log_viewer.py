@@ -24,20 +24,20 @@ class LogHandler(http.server.BaseHTTPRequestHandler):
         try:
             if not os.path.exists("server_information.log"):
                 return ["Log file not found"]
-                
+                    
             with open("server_information.log", "r") as f:
                 content = f.read()
-                
-#           Filter connections blocks
+                    
+            # Ajustamos la expresión regular para capturar correctamente las conexiones
             connection_blocks = re.findall(
-                r'INFO:__main__:\[CONNECTION OPENED\].*?(?=INFO:__main__:\[CONNECTION OPENED\]|\Z)', 
+                r'INFO:__main__:\[CONNECTION OPENED\].*?INFO:__main__:\[CONNECTION CLOSED\].*?(?=INFO:__main__:\[CONNECTION OPENED\]|\Z)', 
                 content, 
                 re.DOTALL
             )
-            
-#           Get the last num_connections blocks
+                
+            # Get the last num_connections blocks
             return connection_blocks[-num_connections:] if connection_blocks else ["No connections found"]
-            
+                
         except Exception as e:
             return [f"Error reading logs: {str(e)}"]
     
