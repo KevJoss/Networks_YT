@@ -9,6 +9,9 @@ class LogHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', '0')
         self.end_headers()
         
 #       Extract the last 3 connections of log file
@@ -20,40 +23,26 @@ class LogHandler(http.server.BaseHTTPRequestHandler):
 #       Send the response 
         self.wfile.write(html.encode())
         
-def extract_last_connections(self, num_connections=3):
-    try:
-        log_path = "server_information.log"
-        
-        # Imprime información de diagnóstico
-        print(f"Trying to read log file: {os.path.abspath(log_path)}")
-        print(f"File exists: {os.path.exists(log_path)}")
-        
-        if not os.path.exists(log_path):
-            return ["Log file not found"]
+    def extract_last_connections(self, num_connections=3):
+        try:
+            if not os.path.exists("server_information.log"):
+                return ["Log file not found"]
                     
-        # Lee el archivo completo cada vez
-        with open(log_path, "r") as f:
-            content = f.read()
-            
-        # Muestra parte del contenido para diagnóstico
-        print(f"File size: {len(content)} bytes")
-        print(f"First 100 chars: {content[:100]}")
-            
-        # Ajustamos la expresión regular para capturar correctamente las conexiones
-        connection_blocks = re.findall(
-            r'INFO:__main__:\[CONNECTION OPENED\].*?INFO:__main__:\[CONNECTION CLOSED\].*?(?=INFO:__main__:\[CONNECTION OPENED\]|\Z)', 
-            content, 
-            re.DOTALL
-        )
-        
-        print(f"Found {len(connection_blocks)} connection blocks")
+            with open("server_information.log", "r") as f:
+                content = f.read()
+                    
+            # Ajustamos la expresión regular para capturar correctamente las conexiones
+            connection_blocks = re.findall(
+                r'INFO:__main__:\[CONNECTION OPENED\].*?INFO:__main__:\[CONNECTION CLOSED\].*?(?=INFO:__main__:\[CONNECTION OPENED\]|\Z)', 
+                content, 
+                re.DOTALL
+            )
                 
-        # Get the last num_connections blocks
-        return connection_blocks[-num_connections:] if connection_blocks else ["No connections found"]
+            # Get the last num_connections blocks
+            return connection_blocks[-num_connections:] if connection_blocks else ["No connections found"]
                 
-    except Exception as e:
-        print(f"Error in extract_last_connections: {e}")
-        return [f"Error reading logs: {str(e)}"]
+        except Exception as e:
+            return [f"Error reading logs: {str(e)}"]
     
     def create_html(self, log_blocks):
         html = """
