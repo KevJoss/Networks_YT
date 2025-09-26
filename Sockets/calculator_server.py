@@ -1,5 +1,7 @@
 import socket                                                      # Import the socket module to create TCP connections
 import json                                                        # Import JSON module to parse and send data in JSON format
+import logging
+
 
 HOST = "0.0.0.0"                                                    # Listen on all network interfaces
 PORT = 80                                                           # Use port 80 for this server (common for web apps)
@@ -62,9 +64,16 @@ server_socket.bind((HOST, PORT))                                                
 server_socket.listen(5)                                             # Listen for connections. '5' = max queued connections
 print(f"Calculator server running on {HOST}:{PORT}")                            # Inform server is ready
 
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="server_information.log", level=logging.INFO)
 # Main loop to accept clients
 while True:
     conn, addr = server_socket.accept()                                         # Wait for a client to connect (blocking)
+    logger.info('Conection start!')
+    logger.info(f'The clien IP is {addr[0]}')
+    logger.info(f'The client port is {addr[1]}')
+    logger.info('Finished')
     data = conn.recv(1024).decode()                             # Receive up to 1024 bytes and decode from bytes to string
     response = handle_request(data)                             # Process the request and get response dictionary
     conn.send(json.dumps(response).encode())        # Convert/serialize response to JSON string, encode to bytes, and send
