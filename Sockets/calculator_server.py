@@ -75,7 +75,7 @@ while True:
     logger.info(f'The client port is {addr[1]}')
     logger.info('Finished')
     data = conn.recv(1024).decode()                             # Receive up to 1024 bytes and decode from bytes to string
-    logger.info(f'Received data from the client: ', data)
+    logger.info(f'Received data from the client: ', json.loads(data))
     response = handle_request(data)                             # Process the request and get response dictionary
     conn.send(json.dumps(response).encode())        # Convert/serialize response to JSON string, encode to bytes, and send
     conn.close()                                                                # Close connection with the client
