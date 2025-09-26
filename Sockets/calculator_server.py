@@ -12,7 +12,7 @@ def handle_request(data):
         "operation": "add",  // add, sub, mul, div
         "a": 10,
         "b": 5
-    }
+    }   
     
     Returns:
         {"result": a * b, "code": 200} for successful multiplication
@@ -39,7 +39,7 @@ def handle_request(data):
             return {"error": "Invalid input", "code": 422}                      # 422 = Unprocessable Entity
 
 #       If all good, multiply a and b
-        if operation == "mult":
+        if operation == "mul":
             return {"result": a * b, "code": 200}                                   # 200 = OK
         elif operation == "add":
             return {"result": a + b, "code": 200}

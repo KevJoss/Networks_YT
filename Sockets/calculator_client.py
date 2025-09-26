@@ -1,35 +1,26 @@
 import socket                                                         # Import socket library for network communication
 import json                                                           # Import JSON library to serialize/deserialize data
 import time
-import os
-import sys
 
 
 HOST = "13.58.165.247"                                              # Server IP address (replace with actual AWS server IP)
 PORT = 80                                                              # Server port (must be the same as the server)
-operation = 0
-correct_choices = {1: "add", 2: "sub", 3: "mul", 4: "div"}
+correct_choices = ("add", "sub", "mul", "div")
 
 # Ask user for numbers first
 print("Welcome to Kev's calculator, please select an operation")
-print("\t1. add")
-print("\t2. sub")
-print("\t3. mul")
-print("\t4. div")
-operation = int(input("Your operation -> "))
+print("\t- add")
+print("\t- sub")
+print("\t- mul")
+print("\t- div")
+operation = input("Write your selection -> ").lower()
+
+
 while operation not in correct_choices:
     print("Incorrect selection!\nPlease try again")
-    operation = int(input("Your operation -> "))
+    operation = input("Write your selection -> ").lower()
 
-print("Processing your choice...")
-time.sleep(2)
-
-if sys.platform.startswith('win'):
-    os.system('cls')
-else:
-    os.system('clear')
-
-print(f"You choose the '{correct_choices[str(operation)]}' operation.")
+print(f"You choose the '{operation}' operation.")
 a_input = input("Enter first number: ")                                 # Prompt user for first number
 b_input = input("Enter second number: ")                                # Prompt user for second number
 
