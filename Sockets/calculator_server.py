@@ -27,7 +27,7 @@ def handle_request(data):
     try: 
 #       Convert JSON string to Python dictionary
         payload = json.loads(data)                                             
-#       Extract 'a' and 'b' from dictionary
+#       Extract 'a' and 'b' and 'operation' from dictionary
         operation, a, b = payload.get("operation"), payload.get("a"), payload.get("b")
 #       Check if parameters are missing
         if a is None or b is None:
@@ -68,8 +68,10 @@ print(f"Calculator server running on {HOST}:{PORT}")                            
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="server_information.log", level=logging.INFO)
+
+conection = True
 # Main loop to accept clients
-while True:
+while conection:
     # Wait for a client to connect (blocking)
     conn, addr = server_socket.accept()  
 
@@ -80,6 +82,13 @@ while True:
     # RECEIVED DATA
     data = conn.recv(1024).decode()
     parsed_data = json.loads(data)
+    if parsed_data['operation'] == 'quit':
+        conection = False
+        logger.info("[REQUEST RECEIVED] Raw Data: {CONECTION END: 100}")
+
+        # END CONECTION
+        logger.info(f"[CONNECTION CLOSED] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        conn.close()
     logger.info(f"[REQUEST RECEIVED] Raw Data: {data}")
     logger.info(f"[REQUEST DETAILS] Operation: {parsed_data['operation']}, Operand A: {parsed_data['a']}, Operand B: {parsed_data['b']}\n")
 
@@ -97,5 +106,5 @@ while True:
     # END CONECTION
     logger.info(f"[CONNECTION CLOSED] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     
-    # Close connection with the client
-    conn.close()                                                          
+# # Close connection with the client
+# conn.close()                                                          
