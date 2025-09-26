@@ -92,8 +92,8 @@ while True:
     start = time.time()
     response = handle_request(data)                             # Process the request and get response dictionary
     logger.info(f'Response by the server to client: {response}')
-    logger.info(f"RESULT: {response}['result']")
-    logger.info(f"CODE: {response}['code']")
+    logger.info(f"RESULT: {response['result']}")
+    logger.info(f"CODE: {response['code']}")
     end = time.time()
     total_time = abs(start - end)
     logger.info(f'Time to process data was: {total_time:.8f} seconds\n')
@@ -103,5 +103,5 @@ while True:
     # End connection time
     time.strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f'Connection END time: {time.strftime("%Y-%m-%d %H:%M:%S")}')
-    logger.info('Finished')
+    logger.info('Finished\n')
     conn.close()                                                                # Close connection with the client
