@@ -1,6 +1,7 @@
 import socket                                                      # Import the socket module to create TCP connections
 import json                                                        # Import JSON module to parse and send data in JSON format
 import logging
+import time
 
 
 HOST = "0.0.0.0"                                                    # Listen on all network interfaces
@@ -70,12 +71,21 @@ logging.basicConfig(filename="server_information.log", level=logging.INFO)
 # Main loop to accept clients
 while True:
     conn, addr = server_socket.accept()                                         # Wait for a client to connect (blocking)
+    time.strftime("%Y-%m-%d %H:%M:%S")
+    logger.info(f'Connection START time: {time.strftime("%Y-%m-%d %H:%M:%S")}')
     logger.info('Conection start!')
     logger.info(f'The clien IP is {addr[0]}')
     logger.info(f'The client port is {addr[1]}')
     logger.info('Finished')
     data = conn.recv(1024).decode()                             # Receive up to 1024 bytes and decode from bytes to string
     logger.info(f'Received data from the client: {json.loads(data)}')
+    start = time.time()
     response = handle_request(data)                             # Process the request and get response dictionary
+    logger.info(f'Response by the server to client: {response}')
+    end = time.time()
+    total_time = abs(start - end)
+    logger.info(f'Time to proccess data was: {total_time}')
     conn.send(json.dumps(response).encode())        # Convert/serialize response to JSON string, encode to bytes, and send
+    time.strftime("%Y-%m-%d %H:%M:%S")
+    logger.info(f'Connection END time: {time.strftime("%Y-%m-%d %H:%M:%S")}')
     conn.close()                                                                # Close connection with the client
