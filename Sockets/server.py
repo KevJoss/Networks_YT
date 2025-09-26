@@ -4,13 +4,13 @@ import socket
 """ IP address where the server will listen. '0.0.0.0' means "all available network interfaces" (any IP of the machine).
  Port where the server will listen for incoming connections. 80 is standard HTTP port. """
 HOST = '0.0.0.0'                                            
-PORT = 80                                                   
+PORT = 80                                             
 
 
 
 """ Creates a TCP socket (IPv4 + TCP by default). The first `socket` is the module you imported. 
     The second `socket()` is the class inside the module that creates a new socket. """
-s = socket.socket()                                         
+s = socket.socket()                                             
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)     # Allow reuse of the address
 s.bind((HOST, PORT))                                        # Binds the socket to the specified address and port.
 
