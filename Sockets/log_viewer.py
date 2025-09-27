@@ -30,24 +30,14 @@ class LogHandler(http.server.BaseHTTPRequestHandler):
                     
             with open("server_information.log", "r") as f:
                 content = f.read()
-                
-            # Nueva expresión regular que busca solo los marcadores de inicio
-            # y luego agrupa hasta el siguiente marcador de inicio o fin de archivo
-            connection_start_points = [m.start() for m in re.finditer(r'INFO:__main__:\[CONNECTION OPENED\]', content)]
-            
-            connection_blocks = []
-            for i in range(len(connection_start_points)):
-                start = connection_start_points[i]
-                # Si no es el último bloque, toma hasta el siguiente inicio
-                if i < len(connection_start_points) - 1:
-                    end = connection_start_points[i + 1]
-                    block = content[start:end]
-                else:
-                    # Si es el último, toma hasta el final
-                    block = content[start:]
-                
-                connection_blocks.append(block)
                     
+            # Ajustamos la expresión regular para capturar correctamente las conexiones
+            connection_blocks = re.findall(
+                r'INFO:__main__:\[CONNECTION OPENED\].*?INFO:__main__:\[CONNECTION CLOSED\].*?(?=INFO:__main__:\[CONNECTION OPENED\]|\Z)', 
+                content, 
+                re.DOTALL
+            )
+                
             # Get the last num_connections blocks
             return connection_blocks[-num_connections:] if connection_blocks else ["No connections found"]
                 
